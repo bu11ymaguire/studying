@@ -1,14 +1,18 @@
+#pragma once
 
+#include <vector>
 
-class Value{
+class Value { //AutoGrad의 핵심부품.
 public:
     double data;
     double grad;
+    std::vector<Value*> children;
+    std::vector<double> local_grads;
 
     Value(double data);
 
-    Value* operator+(Value *other);
-    Value* operator*(Value *other);
+    Value* operator+(Value* other);
+    Value* operator*(Value* other);
     Value* power(double exponent);
     Value* log();
     Value* exp();
