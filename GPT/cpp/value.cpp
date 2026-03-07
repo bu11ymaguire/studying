@@ -1,5 +1,6 @@
 #include "value.h"
-#include <cmath> //헤더 파일은 필요한 cpp에서만 include하는게 빌드에 더 효율적이다!
+#include <cmath>
+#include <set> //헤더 파일은 필요한 cpp에서만 include하는게 빌드에 더 효율적이다!
 
 Value::Value(double data)
 { //최초의 Value 생성
@@ -80,4 +81,37 @@ Value* Value::operator/(Value* other)
     Value* divide = other->power(-1.0);
 
     return *this * divide;
+}
+
+void Value::backward(){
+    std::vector<Value*> topo;
+    std::set<Value*> visited;
+
+    auto build_topo = [&](<auto& self, Value* v>) -> void {
+        if (visited.find(v) == visited.end())
+        {
+            visited.insert(v);
+        
+
+        for(Value* child: v->children)
+        {
+            self(self,child);
+        }
+
+        topo.push_back(v);
+    }};
+
+    build_topo(build_topo,this);
+
+    this->grad = 1.0; //현재 노드의 grad.
+    
+    for(auto it = topo.rebegin(); it != topo.rend(); ++it)
+    {
+        Value* v = *it; //위상정렬에서 역방향으로 갈때의 노드.
+
+        for(size_t i = 0; i < v->children.size(); ++i) //해당 노드의 자식들을 순회.
+        {
+            v->children[i]->grad += v->local_grads[i] * v->grad;
+        }
+    }
 }
