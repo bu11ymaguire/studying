@@ -8,7 +8,7 @@ using Mat = std::vector<Vec>;
 
 Mat create_matrix(int nout, int nin, double std = 0.08);
 
-Vec linear(const Vec& x, const Mat&);
+Vec linear(const Vec& x, const Mat& w);
 
 Vec softmax(const Vec& logits);
 
