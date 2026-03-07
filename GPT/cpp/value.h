@@ -14,6 +14,9 @@ public:
 
     Value* operator+(Value* other);
     Value* operator*(Value* other);
+    Value* operator/(Value* ohter);
+    Value* operator-(Value* other);
+    
     Value* power(double exponent);
     Value* log();
     Value* exp();

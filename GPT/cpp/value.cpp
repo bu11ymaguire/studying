@@ -62,3 +62,15 @@ Value* Value::exp()
 {
     return new Value(std::exp(this->data),std::vector<Value*>{this},std::vector<double>{std::exp(this->data)});
 }
+
+Value* Value::operator-(Value* ohter)
+{
+    /*
+    double result = this->data - other->data;
+    std::vector<double> grads = {(-1.0)*other->data, this->data};
+    */
+    Value* minus = new Value(-1.0);
+    Value* for_plus = *other * minus;
+
+    return *this + for_plus;
+}
