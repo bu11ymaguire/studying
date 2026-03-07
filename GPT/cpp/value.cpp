@@ -1,4 +1,5 @@
 #include "value.h"
+#include <cmath> //헤더 파일은 필요한 cpp에서만 include하는게 빌드에 더 효율적이다!
 
 Value::Value(double data)
 { //최초의 Value 생성
@@ -47,7 +48,17 @@ Value* Value::relu()
     }
 }
 
-Value* Value::power()
+Value* Value::power(double other)
 {
+    return new Value(std::pow(this->data,other),std::vector<Value*>{this}, std::vector<double>{other * std::pow(this->data,other - 1.0)});
+}
 
+Value* Value::log()
+{
+    return new Value(std::log(this->data),std::vector<Value*>{this}, std::vector<double>{1.0/this->data});
+}
+
+Value* Value::exp()
+{
+    return new Value(std::exp(this->data),std::vector<Value*>{this},std::vector<double>{std::exp(this->data)});
 }
