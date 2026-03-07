@@ -36,3 +36,18 @@ Value* Value::operator*(Value* other)
     return new Value(result, parents, grads);
 }
 
+Value* Value::relu()
+{
+    if(this->data > 0)
+    {
+        return new Value(this->data, std::vector<Value*>{this}, std::vector<double>{1.0});
+        
+    }else{
+        return new Value(0.0, std::vector<Value*>{this}, std::vector<double>{0.0});
+    }
+}
+
+Value* Value::power()
+{
+
+}
