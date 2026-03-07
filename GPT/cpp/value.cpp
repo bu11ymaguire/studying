@@ -87,7 +87,7 @@ void Value::backward(){
     std::vector<Value*> topo;
     std::set<Value*> visited;
 
-    auto build_topo = [&](<auto& self, Value* v>) -> void {
+    auto build_topo = [&](auto& self, Value* v) -> void {
         if (visited.find(v) == visited.end())
         {
             visited.insert(v);
@@ -105,7 +105,7 @@ void Value::backward(){
 
     this->grad = 1.0; //현재 노드의 grad.
     
-    for(auto it = topo.rebegin(); it != topo.rend(); ++it)
+    for(auto it = topo.rbegin(); it != topo.rend(); ++it)
     {
         Value* v = *it; //위상정렬에서 역방향으로 갈때의 노드.
 
