@@ -63,7 +63,7 @@ Value* Value::exp()
     return new Value(std::exp(this->data),std::vector<Value*>{this},std::vector<double>{std::exp(this->data)});
 }
 
-Value* Value::operator-(Value* ohter)
+Value* Value::operator-(Value* other)
 {
     /*
     double result = this->data - other->data;
@@ -73,4 +73,11 @@ Value* Value::operator-(Value* ohter)
     Value* for_plus = *other * minus;
 
     return *this + for_plus;
+}
+
+Value* Value::operator/(Value* other)
+{
+    Value* divide = other->power(-1.0);
+
+    return *this * divide;
 }
