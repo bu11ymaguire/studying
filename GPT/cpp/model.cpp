@@ -173,8 +173,6 @@ Vec GPT::forward(int token_id, int pos_id, std::vector<std::vector<Vec>>& keys,s
     return logits; 
 }
 
-
-
 /*
 def gpt(token_id, pos_id, keys, values):
     tok_emb = state_dict['wte'][token_id] # token embedding
