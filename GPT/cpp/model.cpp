@@ -90,13 +90,50 @@ Vec GPT::forward(int token_id, int pos_id, std::vector<std::vector<Vec>>& keys,s
             for(int j = hs; j < hs + HEAD_DIM; j++){
                 q_h.push_back(q[j]);
             }
-        }
 
-        std::vector<Vec> k_h;
-        for(const Vec& ki : keys[i])
-        {
+            std::vector<Vec> k_h;
+
+            for(const Vec& ki : keys[i]){
+            Vec sliced_k;
+            for(int j = hs; j < hs + HEAD_DIM; j++)
+            {
+                sliced_k.push_backk(ki[j]);
+            }
+            k_h.push_back(sliced_k);
+            }
+
+            std::vector<Vec> v_h;
+
+            for(const Vec& vi: values[i]){
+            Vec sliced_v;
+            for(int j = hs; j < hs+HEAD_DIM; j++){
+                sliced_k.push_back(vi[j]);
+            }
+            v_h.push_back(sliced_v);
+            }
+
+            Vec attn_logits;
+            Value* scale_factor = new Value(std::sqrt(HEAD_DIM));
+
+            for(size_t t = 0; t < k_h.size(); t++)
+            {
+                Value* dot_product = new Value(0.0);
+
+                for(int j = 0; j < HEAD_DIM; j++)
+                {
+                    Value* cross = *q_h[j] * k_h[t][j];
+                    dot_product = *dot_product + cross;
+                }
+
+                Value* logit = *dot_product / scale_factor;
+                attn_logits.push_back(logit);
+            }
+
+            Vec attn_weights = softmax(attn_logits);
+
             
         }
+        
     } 
 }
 
