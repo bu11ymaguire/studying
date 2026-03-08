@@ -82,7 +82,7 @@ Vec GPT::forward(int token_id, int pos_id, std::vector<std::vector<Vec>>& keys,s
 
         Vec x_attn;
 
-        fot(int h = 0; h < N_HEAD; h++)
+        for(int h = 0; h < N_HEAD; h++)
         {
             int hs = h * HEAD_DIM;
 
@@ -97,7 +97,7 @@ Vec GPT::forward(int token_id, int pos_id, std::vector<std::vector<Vec>>& keys,s
             Vec sliced_k;
             for(int j = hs; j < hs + HEAD_DIM; j++)
             {
-                sliced_k.push_backk(ki[j]);
+                sliced_k.push_back(ki[j]);
             }
             k_h.push_back(sliced_k);
             }
@@ -107,7 +107,7 @@ Vec GPT::forward(int token_id, int pos_id, std::vector<std::vector<Vec>>& keys,s
             for(const Vec& vi: values[i]){
             Vec sliced_v;
             for(int j = hs; j < hs+HEAD_DIM; j++){
-                sliced_k.push_back(vi[j]);
+                sliced_v.push_back(vi[j]);
             }
             v_h.push_back(sliced_v);
             }
@@ -138,14 +138,18 @@ Vec GPT::forward(int token_id, int pos_id, std::vector<std::vector<Vec>>& keys,s
                 Value* plus = new Value(0.0);
 
                 for(size_t t = 0; t < v_h.size(); t++){
-                    Value* cross = attn_weights[t] * v_h[t][j];
+                    Value* cross = *attn_weights[t] * v_h[t][j];
                     plus = *plus + cross;
                 }
 
                 head_out.push_back(plus);
             }
+
+            for(const auto& val: head_out){
+                x_attn.push_back(val);
+            }
         }
-        
+        //TO DO.
     } 
 }
 
