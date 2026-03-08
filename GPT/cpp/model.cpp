@@ -1,4 +1,5 @@
 #include "model.h"
+#include <cmath>
 
 GPTLayer::GPTLayer() // 개별 레이어 생성자.
 {
@@ -149,8 +150,27 @@ Vec GPT::forward(int token_id, int pos_id, std::vector<std::vector<Vec>>& keys,s
                 x_attn.push_back(val);
             }
         }
-        //TO DO.
-    } 
+        
+        x = linear(x_attn, this->layers[i].attn_wo);
+        for(size_t t = 0; t < x.size(); t++){
+            x[t] = *x[t] + x_residual[t];
+        }
+
+        x_residual = x;
+        x = rmsnorm(x);
+
+        x = linear(x, this->layers[i].mlp_fc1);
+        for(size_t j = 0; j < x.size(); ++j){
+            x[j] = x[j]->relu();
+        }
+
+        x = linear(x, this->layers[i].mlp_fc2);
+        for(size_t j = 0; j < x.size(); ++j){
+            x[j] = *x[j] + x_residual[j];
+        }
+    }
+    Vec logits = linear(x, this->lm_head);
+    return logits; 
 }
 
 
