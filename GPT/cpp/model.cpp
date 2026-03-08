@@ -131,7 +131,19 @@ Vec GPT::forward(int token_id, int pos_id, std::vector<std::vector<Vec>>& keys,s
 
             Vec attn_weights = softmax(attn_logits);
 
-            
+            Vec head_out;
+
+            for(int j = 0; j < HEAD_DIM; j++)
+            {
+                Value* plus = new Value(0.0);
+
+                for(size_t t = 0; t < v_h.size(); t++){
+                    Value* cross = attn_weights[t] * v_h[t][j];
+                    plus = *plus + cross;
+                }
+
+                head_out.push_back(plus);
+            }
         }
         
     } 
