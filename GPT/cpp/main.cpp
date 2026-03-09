@@ -90,6 +90,21 @@ int main(){
             Value* loss_t = *prob_log * minus_one;
 
             losses.push_back(loss_t);
+            
+            int predicted_id = 0;
+            double max_prob = probs[0]->data;
+
+            for(size_t i = 1; i < probs.size(); i++){
+                if(probs[i]->data > max_prob){
+                    max_prob = probs[i]->data;
+                    predicted_id = i;
+                }
+            }
+
+            char target_char = (target_id == BOS) ? '#' : all_chars[target_id];
+            char predicted_char = (predicted_id == BOS) ? '#' : all_chars[predicted_id];
+
+            std::cout << "Target: " << target_char << " | " << "Pred: " << predicted_char << " (Conf: " << max_prob * 100 << "%)" << std::endl;
         }
 
         Value* loss = new Value(0.0);
