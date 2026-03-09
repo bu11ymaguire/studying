@@ -1,5 +1,6 @@
 #include<iostream>
 #include<fstream>
+#include<cmath>
 #include<vector>
 #include<string>
 #include<algorithm>
@@ -18,9 +19,9 @@ int main(){
 
     std::vector<std::string> docs;
     std::string line;
-    std::string all_chars = "";
+    std::string all_chars = ""; 
 
-    while(std::getline(file, line))
+    while(std::getline(file, line)) //고유 문자 추출을 위해 모든 글자를 이어붙인다.
     {
         if(!line.empty()){
             if(!line.empty()){
@@ -30,11 +31,14 @@ int main(){
         }
     }
 
+    
+    // 고유 문자 뽑아내기 및 정렬
     std::sort(all_chars.begin(), all_chars.end());
     auto last = std::unique(all_chars.begin(), all_chars.end());
     all_chars.erase(last, all_chars.end());
 
-    int BOS = all_chars.size();
+
+    int BOS = all_chars.size(); //BOS 특수 토큰 ID
     int VOCAB_SIZE = all_chars.size() + 1 ; 
 
     std::cout << "Num docs: " << docs.size() << std::endl;
@@ -45,16 +49,19 @@ int main(){
     std::vector<Value*> params = model.get_all_params();
     std::cout << "Num params: " << params.size() << std::endl;
 
+    // Adam 옵티마이저 버퍼 초기화
     std::vector<double> m(params.size(), 0.0);
     std::vector<double> v(params.size(), 0.0);
 
     for(int step = 0; step < NUM_STEPS; step++){
+        // 문자열 데이터를 Tokenizer로 숫자 번역.
         std::string doc = docs[step % docs.size()];
         std::vector<int> tokens;
 
-        tokens.push_back(BOS);
+        tokens.push_back(BOS); // [BOS] 토큰 먼저 하나 넣기.
 
         for(char ch: doc){
+            // all_chars 배열에서 ch 와 같은 글자의 위치 찾기.
             auto it = std::find(all_chars.begin(), all_chars.end(), ch);
             int idx = std::distance(all_chars.begin(), it);
             tokens.push_back(idx);
@@ -62,12 +69,13 @@ int main(){
 
         tokens.push_back(BOS);
 
+        // 학습할 글자 길이(n) 정하기.
         int n = std::min(BLOCK_SIZE, static_cast<int>(tokens.size())-1);
 
         std::vector<std::vector<Vec>> keys(N_LAYER);
         std::vector<std::vector<Vec>> values(N_LAYER);
 
-        std::vector<Value*> losses;
+        std::vector<Value*> losses; 
 
         for(int pos_id = 0; pos_id < n; pos_id++){
             int token_id = tokens[pos_id];
