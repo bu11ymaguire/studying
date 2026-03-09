@@ -26,7 +26,7 @@ class GPT
 
     std::vector<GPTLayer> layers;
 
-    GPT();
+    GPT(int vocab_size);
 
     std::vector<Value*> get_all_params();
 

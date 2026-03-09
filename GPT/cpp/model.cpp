@@ -12,14 +12,12 @@ GPTLayer::GPTLayer() // 개별 레이어 생성자.
     mlp_fc2 = create_matrix(N_EMBD, 4 * N_EMBD);
 }
 
-GPT::GPT() // 전체 모델 생성자
+GPT::GPT(int vocab_size) // 전체 모델 생성자
 {
 
-    int VOCAB_SIZE = 65;
-
-    wte = create_matrix(VOCAB_SIZE, N_EMBD);
+    wte = create_matrix(vocab_size, N_EMBD);
     wpe = create_matrix(BLOCK_SIZE, N_EMBD);
-    lm_head = create_matrix(VOCAB_SIZE, N_EMBD);
+    lm_head = create_matrix(vocab_size, N_EMBD);
 
     for(int i = 0; i < N_LAYER; i++)
     {
