@@ -2,13 +2,13 @@
 #include <random>
 #include <cmath>
 
-Mat create_matrix(int nout, int nin, double std)
+Mat create_matrix(int nout, int nin, double std_dev)
 {
     Mat result(nout, Vec(nin)); //nout * nin 크기의 행렬
 
     std::random_device rd;
     std::mt19937 gen(rd());
-    std::normal_distribution<double> dist(0.0, std);
+    std::normal_distribution<double> dist(0.0, std_dev);
     
     for(int r = 0; r < nout; r++)
     {
